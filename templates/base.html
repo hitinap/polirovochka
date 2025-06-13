@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Polirovochka - Детейлинг и полировка авто{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #f8f9fa;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Навигационное меню */
+        .navbar {
+            background: #2c3e50;
+            /* Темно-синий фон */
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Логотип слева */
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Центральная часть - навигационные кнопки */
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            flex: 2;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.8rem;
+            margin: 0 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: block;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: #3498db;
+            /* Синий цвет при наведении */
+        }
+
+        /* Правая часть - контактный телефон */
+        .nav-contact {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .phone-link {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            background: #3498db;
+            /* Синий фон для кнопки телефона */
+            transition: all 0.3s ease;
+        }
+
+        .phone-link:hover {
+            background: #2980b9;
+            /* Темнее при наведении */
+        }
+
+        .phone-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .phone-number {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Гамбургер-иконка для мобильных */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: #3498db;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger:hover {
+            background: #2980b9;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* Основной контент */
+        .content {
+            padding-top: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .service-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        /* Медиа-запросы для мобильных устройств */
+        @media (max-width: 992px) {
+            .nav-item {
+                padding: 0.6rem 1.4rem;
+                font-size: 0.95rem;
+            }
+
+            .phone-link {
+                padding: 0.5rem 1rem;
+            }
+
+            .phone-number {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .nav-contact {
+                display: none;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: #2c3e50;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                transform: translateY(-150%);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-item {
+                width: 90%;
+                text-align: center;
+                padding: 1.1rem;
+                margin: 5px 0;
+                background: #2c3e50;
+            }
+
+            .nav-item:hover {
+                background: #3498db;
+            }
+
+            .mobile-contact {
+                display: flex;
+                justify-content: center;
+                width: 90%;
+                margin-top: 10px;
+            }
+
+            .phone-link {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .content {
+                padding-top: 60px;
+                padding: 80px 15px 20px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Анимация гамбургера в крестик */
+        .hamburger.open span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Фиксированное меню -->
+    <nav class="navbar">
+        <!-- Логотип слева -->
+        <div class="logo">Polirovochka</div>
+
+        <!-- Центральная часть - навигационные кнопки -->
+        <div class="nav-center">
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('index') }}" class="nav-item">Главная</a></li>
+                <li><a href="#" class="nav-item">Услуги</a></li>
+                <li><a href="#" class="nav-item">Галерея</a></li>
+                <li><a href="#" class="nav-item">Контакты</a></li>
+
+                <!-- Телефон для мобильной версии -->
+                <li class="mobile-contact">
+                    <a href="tel:+71234567890" class="nav-item phone-link">
+                        <span class="phone-icon">📱</span>
+                        <span class="phone-number">+7 (123) 456-78-90</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Правая часть - контактный телефон -->
+        <div class="nav-contact">
+            <a href="tel:+71234567890" class="phone-link">
+                <span class="phone-icon">📱</span>
+                <span class="phone-number">+7 (123) 456-78-90</span>
+            </a>
+        </div>
+
+        <!-- Гамбургер-меню -->
+        <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <div class="content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        // JavaScript для управления мобильным меню
+        document.addEventListener('DOMContentLoaded', function () {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+
+            hamburger.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('open');
+            });
+
+            // Закрытие меню при клике на ссылку
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('open');
+                });
+            });
+
+            // Закрытие меню при клике вне области
+            document.addEventListener('click', function (event) {
+                const isClickInsideNav = navLinks.contains(event.target) || hamburger.contains(event.target);
+                if (!isClickInsideNav && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('open');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

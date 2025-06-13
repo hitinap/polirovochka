@@ -1,0 +1,1 @@
+start "Project Env" ".\polirovochka\Scripts\activate"

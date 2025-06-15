@@ -1,6 +1,161 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Добро пожаловать на наш сайт!</h1>
-    <p>Посмотрите наш список услуг на соответствующей странице.</p>
+<!-- Слайдер на весь экран -->
+<div class="fullscreen-slider">
+    <div class="slides">
+        <div class="slide" style="background-image: url('{{ url_for('static', filename='images/1.jpg') }}')"></div>
+        <div class="slide" style="background-image: url('{{ url_for('static', filename='images/2.jpg') }}')"></div>
+        <div class="slide" style="background-image: url('{{ url_for('static', filename='images/3.jpg') }}')"></div>
+        <div class="slide" style="background-image: url('{{ url_for('static', filename='images/4.jpg') }}')"></div>
+    </div>
+    <div class="slider-overlay"></div>
+</div>
+
+<div class="home-content">
+    <h1>Детейлинг и полировка вашего авто в Нижнем Новгороде!</h1>
+    <p>Мы предлагаем профессиональные услуги в области веб-разработки и дизайна. Наша команда экспертов готова
+        реализовать любые ваши идеи.</p>
+    <p>Посмотрите наш список услуг на соответствующей странице и свяжитесь с нами для обсуждения вашего проекта.</p>
+    <p>Современные решения, креативный подход и внимание к деталям - вот что отличает нашу работу.</p>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="#contactForm" class="nav-item"
+            style="display: inline-block; background: #3498db; color: white; padding: 12px 30px; font-size: 1.1rem; text-decoration: none; border-radius: 30px; transition: all 0.3s ease;">
+            Оставить заявку
+        </a>
+    </div>
+</div>
+
+<!-- Блок "Почему стоит выбрать именно нас?" -->
+<div class="why-us-section">
+    <div class="container">
+        <h2>Почему выбирают именно нас?</h2>
+        <p class="section-subtitle">Мы гордимся нашими достижениями и доверием клиентов</p>
+
+        <div class="stats-grid">
+            <!-- Колонка 1 -->
+            <div class="stat-card">
+                <div class="stat-number" data-count="200">+</div>
+                <div class="stat-source">Google Reviews</div>
+                <div class="stat-description">Более 200 положительных отзывов на Авито</div>
+            </div>
+
+            <!-- Колонка 2 -->
+            <div class="stat-card">
+                <div class="stat-number" data-count="98">0</div>
+                <div class="stat-source">Yandex Rating</div>
+                <div class="stat-description">Процент положительных отзывов на Яндекс.Маркете</div>
+            </div>
+
+            <!-- Колонка 3 -->
+            <div class="stat-card">
+                <div class="stat-number" data-count="12000">0</div>
+                <div class="stat-source">Наши клиенты</div>
+                <div class="stat-description">Пользователей, которые выбрали наши услуги за последний год</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Карусель примеров работ -->
+<div class="portfolio-carousel">
+    <div class="container">
+        <h2>Примеры наших работ</h2>
+        <p class="section-subtitle">Посмотрите реальные проекты, которые мы реализовали для наших клиентов</p>
+
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" aria-label="Предыдущий слайд">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+
+            <div class="carousel-track">
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main1.jpg">
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main2.jpg">
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main3.jpg">
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main4.jpg">
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main5.jpg">
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="portfolio-item">
+                        <img src="static/gallery/sample_main6.jpg">
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-btn next-btn" aria-label="Следующий слайд">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="carousel-dots"></div>
+        <p class="carousel-more">Смотрите больше примеров наших работ в <a href="{{ url_for('gallery') }}">Галерее</a>
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    {% include 'form.html' %}
+</div>
+
+<!-- Блок "Нужна консультация?" -->
+<div class="consultation-section">
+    <div class="container">
+        <div class="consultation-container">
+            <div class="consultation-left">
+                <h2>Нужна консультация?</h2>
+            </div>
+
+            <div class="consultation-center">
+                <p>Не уверены, какая услуга подходит именно вам? Оставьте заявку и мы свяжемся с вами для
+                    бесплатной консультации.</p>
+            </div>
+
+            <div class="consultation-right">
+                <button class="consultation-btn" onclick="scrollToContactForm()">Оставить заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrollToContactForm() {
+        const formSection = document.getElementById('contactFormSection');
+        if (formSection) {
+            formSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Небольшая задержка для лучшей видимости
+            setTimeout(() => {
+                document.getElementById('name').focus();
+            }, 800);
+        }
+    }
+</script>
 {% endblock %}

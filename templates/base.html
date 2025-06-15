@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Polirovochka - Детейлинг и полировка авто{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,7 +17,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            line-height: 1.2;
             overflow-x: hidden;
             background: #f8f9fa;
             min-height: 100vh;
@@ -24,10 +26,9 @@
 
         /* Навигационное меню */
         .navbar {
-            background: #2c3e50;
-            /* Темно-синий фон */
+            background: transparent;
             color: white;
-            padding: 1rem;
+            padding: 0.5rem;
             position: fixed;
             top: 0;
             width: 100%;
@@ -35,6 +36,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.4s ease;
+            /* Плавное изменение фона */
+            box-shadow: none;
+            /* Без тени изначально */
+        }
+
+        /* Стиль при прокрутке */
+        .navbar.scrolled {
+            background: #232324;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -61,7 +71,7 @@
         }
 
         .nav-item {
-            color: white;
+            color: #818c99;
             text-decoration: none;
             padding: 0.7rem 1.8rem;
             margin: 0 8px;
@@ -72,9 +82,12 @@
             text-align: center;
         }
 
+        .nav-item.active {
+            color: white !important;
+        }
+
         .nav-item:hover {
-            background: #3498db;
-            /* Синий цвет при наведении */
+            color: #fff;
         }
 
         /* Правая часть - контактный телефон */
@@ -86,21 +99,51 @@
             min-width: 180px;
         }
 
+        .navbar:not(.scrolled) .nav-item,
+        .navbar:not(.scrolled) .phone-link,
+        .navbar:not(.scrolled) .icon-link,
+        .navbar:not(.scrolled) .logo {
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
         .phone-link {
             display: flex;
             align-items: center;
             color: white;
             text-decoration: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.6rem;
             border-radius: 4px;
-            background: #3498db;
+            /* background: #3498db; */
             /* Синий фон для кнопки телефона */
             transition: all 0.3s ease;
         }
 
-        .phone-link:hover {
-            background: #2980b9;
-            /* Темнее при наведении */
+        .logo-img {
+            width: 172px;
+            height: 40px;
+        }
+
+        .icon-link {
+            padding: 0.4rem;
+            align-items: center;
+            transition: all 0.3s ease;
+            justify-content: flex-end;
+            text-decoration: none;
+        }
+
+        .vk-link img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .telegram-link img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .whatsapp-link img {
+            width: 36px;
+            height: 36px;
         }
 
         .phone-icon {
@@ -117,15 +160,11 @@
         .hamburger {
             display: none;
             cursor: pointer;
-            background: #3498db;
+            background: transparent;
             border: none;
             border-radius: 4px;
             padding: 8px 10px;
             transition: all 0.3s ease;
-        }
-
-        .hamburger:hover {
-            background: #2980b9;
         }
 
         .hamburger span {
@@ -141,51 +180,648 @@
         /* Основной контент */
         .content {
             padding-top: 70px;
-            max-width: 1200px;
+            /* max-width: 1200px; */
             margin: 0 auto;
-            padding: 100px 20px 40px;
+            /* padding: 100px 20px 40px; */
         }
 
         .container {
-            background: white;
+            /* background: white; */
             border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .service-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .service-card {
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            border-color: #3498db;
+            /* padding: 40px; */
+            /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); */
         }
 
         h1 {
             margin-bottom: 25px;
-            color: #2c3e50;
+            color: #fff;
             font-size: 2.5rem;
+            text-align: center;
+            font-family: "Roboto", sans-serif;
         }
 
         p {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             font-size: 1.1rem;
             line-height: 1.8;
             color: #555;
+        }
+
+        /* Стили для слайдера */
+        .fullscreen-slider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Под основным контентом */
+        }
+
+        .background-plug {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #232324;
+        }
+
+        .slides {
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slider-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            /* Затемнение для лучшей читаемости текста */
+        }
+
+        /* Стили только для главной страницы */
+        .home-content {
+            position: relative;
+            z-index: 2;
+            /* background: rgba(255, 255, 255, 0.85); */
+            /* Полупрозрачный фон */
+            /* border-radius: 10px; */
+            min-height: 100vh;
+            /* padding: 40px; */
+            padding: 100px 40px 40px;
+            /* box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2); */
+        }
+
+        footer {
+            background: #232324;
+            color: white;
+            padding: 30px 20px 10px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 180px;
+            margin-bottom: 10px;
+        }
+
+        .footer-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: #EBE3D5;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 5px 0;
+        }
+
+        .footer-links a:hover {
+            color: #EBE3D5;
+            transform: translateX(5px);
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-phone {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .footer-phone-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+
+        .footer-yandex-map {
+            width: 100%;
+            height: 215px;
+            border-radius: 5px !important;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-left: 55px;
+        }
+
+        .why-us-section {
+            background: #f8f9fa;
+            padding: 10px 0;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .why-us-section h2 {
+            text-align: center;
+        }
+
+        .why-us-section .container {
+            padding: 40px;
+        }
+
+        .why-us-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #D2C9B8, #232324);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #3498db;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 15px 0;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .stat-number::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -15px;
+            font-size: 2rem;
+            color: #3498db;
+        }
+
+        .stat-source {
+            font-size: 1.4rem;
+            color: #3498db;
+            font-weight: 600;
+            margin: 15px 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .stat-source::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3498db;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-source::after {
+            transform: scaleX(1);
+        }
+
+        .stat-description {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        /* Стили для карусели портфолио */
+        .portfolio-carousel {
+            background: #232324;
+            padding: 20px 0;
+            color: white;
+        }
+
+        .portfolio-carousel h2,
+        .portfolio-carousel .section-subtitle {
+            color: white;
+            text-align: center;
+        }
+
+        .portfolio-carousel .section-subtitle {
+            opacity: 0.8;
+            margin-bottom: 50px;
+        }
+
+        .portfolio-carousel .carousel-more {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .portfolio-carousel .carousel-more a {
+            text-decoration: none !important;
+            color: #dbdbdb;
+        }
+
+        .portfolio-carousel .carousel-more a:hover {
+            color: #fff;
+        }
+
+        .carousel-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-track {
+            display: flex;
+            overflow: hidden;
+            scroll-behavior: smooth;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .carousel-slide {
+            flex: 0 0 25%;
+            padding: 0 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            height: 300px;
+            transition: all 0.4s ease;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .carousel-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            z-index: 10;
+            font-size: 1.2rem;
+        }
+
+        .carousel-btn:hover {
+            background: #D2C9B8;
+            transform: scale(1.1);
+        }
+
+        .prev-btn {
+            left: -75px;
+        }
+
+        .next-btn {
+            right: -75px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: #D2C9B8;
+            transform: scale(1.2);
+        }
+
+        /* Стили для блока консультации */
+        .consultation-section {
+            background: #f8f9fa;
+            color: #000;
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .consultation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #D2C9B8, #232324);
+        }
+
+        .consultation-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1420px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .consultation-left {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .consultation-left h2 {
+            font-size: 2rem;
+            margin-bottom: 0;
+            position: relative;
+            padding-left: 20px;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .consultation-left h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 50px;
+            background: #D2C9B8;
+            border-radius: 4px;
+        }
+
+        .consultation-center {
+            flex: 2;
+            padding: 0 40px;
+            margin: 0 40px;
+            font-size: 0.4rem;
+            line-height: 1;
+            max-width: 800px;
+        }
+
+        .consultation-right {
+            flex: 1;
+            text-align: center;
+            min-width: 220px;
+        }
+
+        .consultation-btn {
+            /* background: #e74c3c; */
+            color: #000;
+            border: 1px solid #000;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px #D2C9B8;
+            display: inline-block;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .consultation-btn:hover {
+            background: #D2C9B8;
+            /* transform: translateY(-3px) scale(1.01); */
+            box-shadow: 0 8px 25px #D2C9B8;
+        }
+
+        /* Адаптивность блока консультации */
+        @media (max-width: 992px) {
+            .consultation-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .consultation-left {
+                margin-bottom: 20px;
+            }
+
+            .consultation-left h2::before {
+                display: none;
+            }
+
+            .consultation-center {
+                padding: 0 20px;
+                margin-bottom: 30px;
+            }
+
+            .consultation-right {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .consultation-section {
+                padding: 50px 0;
+            }
+
+            .consultation-left h2 {
+                font-size: 1.8rem;
+            }
+
+            .consultation-btn {
+                padding: 14px 25px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Адаптивность карусели */
+        @media (max-width: 1200px) {
+            .carousel-slide {
+                flex: 0 0 33.333%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .carousel-slide {
+                flex: 0 0 50%;
+            }
+
+            .carousel-btn {
+                position: static;
+                margin: 0 10px;
+                display: none;
+            }
+
+            .carousel-container {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-carousel {
+                padding: 50px 0;
+            }
+
+            .carousel-slide {
+                flex: 0 0 100%;
+            }
+
+            .portfolio-item {
+                height: 250px;
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .why-us-section {
+                padding: 10px 0;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .stat-source {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Адаптация подвала для мобильных */
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+            }
+
+            .footer-column {
+                margin-bottom: 20px;
+            }
+
+            .footer-title {
+                margin-bottom: 15px;
+            }
+
+            .footer-yandex-map {
+                margin: auto;
+            }
         }
 
         /* Медиа-запросы для мобильных устройств */
@@ -209,8 +845,8 @@
                 display: block;
             }
 
-            .nav-center {
-                display: none;
+            .navbar {
+                background: #232324;
             }
 
             .nav-contact {
@@ -221,11 +857,11 @@
                 position: absolute;
                 top: 100%;
                 left: 0;
-                background: #2c3e50;
+                background: #232324;
                 width: 100%;
                 flex-direction: column;
                 align-items: center;
-                padding: 1rem 0;
+                padding: 0.5rem 0;
                 transform: translateY(-150%);
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             }
@@ -237,13 +873,13 @@
             .nav-item {
                 width: 90%;
                 text-align: center;
-                padding: 1.1rem;
+                padding: 0.5rem;
                 margin: 5px 0;
-                background: #2c3e50;
+                background: #232324;
             }
 
             .nav-item:hover {
-                background: #3498db;
+                color: #fff;
             }
 
             .mobile-contact {
@@ -256,15 +892,6 @@
             .phone-link {
                 width: 100%;
                 justify-content: center;
-            }
-
-            .content {
-                padding-top: 60px;
-                padding: 80px 15px 20px;
-            }
-
-            .container {
-                padding: 25px;
             }
 
             h1 {
@@ -289,33 +916,42 @@
 
 <body>
     <!-- Фиксированное меню -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <!-- Логотип слева -->
-        <div class="logo">Polirovochka</div>
+        <a href="{{ url_for('index') }}" class="logo">
+            <img src="static/logo.png" class="logo-img" />
+        </a>
+        <!-- <div class="logo">Polirovochka</div> -->
 
         <!-- Центральная часть - навигационные кнопки -->
         <div class="nav-center">
             <ul class="nav-links" id="navLinks">
-                <li><a href="{{ url_for('index') }}" class="nav-item">Главная</a></li>
-                <li><a href="#" class="nav-item">Услуги</a></li>
-                <li><a href="#" class="nav-item">Галерея</a></li>
-                <li><a href="#" class="nav-item">Контакты</a></li>
-
-                <!-- Телефон для мобильной версии -->
-                <li class="mobile-contact">
-                    <a href="tel:+71234567890" class="nav-item phone-link">
-                        <span class="phone-icon">📱</span>
-                        <span class="phone-number">+7 (123) 456-78-90</span>
-                    </a>
-                </li>
+                <li><a href="{{ url_for('index') }}"
+                        class="nav-item {% if request.path == url_for('index') %}active{% endif %}">Главная</a></li>
+                <li><a href="{{ url_for('services') }}"
+                        class="nav-item {% if request.path == url_for('services') %}active{% endif %}">Услуги</a></li>
+                <li><a href="{{ url_for('promo') }}"
+                        class="nav-item {% if request.path == url_for('promo') %}active{% endif %}">Акции</a></li>
+                <li><a href="{{ url_for('gallery') }}"
+                        class="nav-item {% if request.path == url_for('gallery') %}active{% endif %}">Галерея</a></li>
+                <li><a href="{{ url_for('contacts') }}"
+                        class="nav-item {% if request.path == url_for('contacts') %}active{% endif %}">Контакты</a></li>
             </ul>
         </div>
 
         <!-- Правая часть - контактный телефон -->
         <div class="nav-contact">
-            <a href="tel:+71234567890" class="phone-link">
-                <span class="phone-icon">📱</span>
-                <span class="phone-number">+7 (123) 456-78-90</span>
+            <a href="tel:+79040611322" class="phone-link">
+                <span class="phone-number">+7 (904) 061-13-22</span>
+            </a>
+            <a href="https://vk.com/im?sel=-229022915" class="icon-link vk-link">
+                <img src="static/vk.png" />
+            </a>
+            <a href="https://t.me/FarLabNN" class="icon-link telegram-link">
+                <img src="static/telegram.png" />
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=79040611322" class="icon-link whatsapp-link">
+                <img src="static/whatsapp.png" />
             </a>
         </div>
 
@@ -333,11 +969,65 @@
         </div>
     </div>
 
+    <footer>
+        <div class="footer-container">
+            <!-- Колонка 1: Навигация по страницам -->
+            <div class="footer-column">
+                <h3 class="footer-title">Навигация</h3>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('index') }}">Главная</a></li>
+                    <li><a href="{{ url_for('services') }}">Услуги</a></li>
+                    <li><a href="{{ url_for('promo') }}">Акции</a></li>
+                    <li><a href="{{ url_for('gallery') }}">Галерея</a></li>
+                    <li><a href="{{ url_for('contacts') }}">Контакты</a></li>
+                </ul>
+            </div>
+
+            <!-- Колонка 2: Контактная информация -->
+            <div class="footer-column">
+                <h3 class="footer-title">Контакты</h3>
+                <div class="footer-contact">
+                    <div class="footer-phone">
+                        <span>+7 (904) 061-13-22</span>
+                    </div>
+                    <p>Nek52rus@gmail.com</p>
+                    <p>Нижний Новгород, Пензенский переулок, 20А</p>
+                    <p>Ежедневно, 9:00-18:00</p>
+                    <p>
+                        <a href="https://vk.com/im?sel=-229022915" class="icon-link vk-link">
+                            <img src="static/vk.png" />
+                        </a>
+                        <a href="https://t.me/FarLabNN" class="icon-link telegram-link">
+                            <img src="static/telegram.png" />
+                        </a>
+                        <a href="https://api.whatsapp.com/send?phone=79040611322" class="icon-link whatsapp-link">
+                            <img src="static/whatsapp.png" />
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Колонка 3: Карта -->
+            <div class="footer-column">
+                <div class="footer-yandex-map">
+                    <script type="text/javascript" charset="utf-8" async
+                        src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aa861c089b901a4eebc54c8351897ca9032ed8231940e9c4847950b1f84019b40&amp;lang=ru_RU&amp;scroll=true"></script>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; Окак. Мы сделали себе сайт...</p>
+        </div>
+    </footer>
+
     <script>
         // JavaScript для управления мобильным меню
         document.addEventListener('DOMContentLoaded', function () {
             const hamburger = document.getElementById('hamburger');
             const navLinks = document.getElementById('navLinks');
+            // Обработчик прокрутки для навигационного меню
+            const navbar = document.getElementById('navbar');
 
             hamburger.addEventListener('click', function () {
                 navLinks.classList.toggle('active');
@@ -360,6 +1050,169 @@
                     hamburger.classList.remove('open');
                 }
             });
+
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 50) { // Если прокрутка больше 50px
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Проверить при загрузке (если страница загружена не сверху)
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            }
+
+            // Слайдер галерея (только на главной странице)
+            if (document.querySelector('.fullscreen-slider')) {
+                let currentSlide = 0;
+                const slides = document.querySelectorAll('.slide');
+                const slideCount = slides.length;
+                const slideInterval = 5 * 1000; // 5 секунд
+
+                // Функция смены слайда
+                function nextSlide() {
+                    // Скрываем текущий слайд
+                    slides[currentSlide].classList.remove('active');
+
+                    // Переходим к следующему слайду
+                    currentSlide = (currentSlide + 1) % slideCount;
+
+                    // Показываем новый слайд
+                    slides[currentSlide].classList.add('active');
+                }
+
+                // Запускаем автоматическую смену слайдов
+                setInterval(nextSlide, slideInterval);
+
+                // Инициализация: показываем первый слайд
+                slides[0].classList.add('active');
+            }
+
+            // Анимация счетчиков
+            function animateCounter(element) {
+                const target = parseInt(element.getAttribute('data-count'));
+                const duration = 2000; // 2 секунды
+                const start = 0;
+                const startTime = performance.now();
+
+                function updateCounter(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const currentValue = Math.floor(progress * target);
+
+                    element.textContent = currentValue;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        element.textContent = target;
+                    }
+                }
+
+                requestAnimationFrame(updateCounter);
+            }
+
+            // Запуск анимации при попадании в область видимости
+            function handleIntersection(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counters = document.querySelectorAll('.stat-number');
+                        counters.forEach(counter => {
+                            animateCounter(counter);
+                        });
+                        observer.disconnect();
+                    }
+                });
+            }
+
+            const observer = new IntersectionObserver(handleIntersection);
+            const section = document.querySelector('.why-us-section');
+            if (section) {
+                observer.observe(section);
+            }
+
+            // Инициализация карусели портфолио
+            function initPortfolioCarousel() {
+                const carousel = document.querySelector('.carousel-track');
+                const slides = document.querySelectorAll('.carousel-slide');
+                const prevBtn = document.querySelector('.prev-btn');
+                const nextBtn = document.querySelector('.next-btn');
+                const dotsContainer = document.querySelector('.carousel-dots');
+
+                if (!carousel || !slides.length) return;
+
+                let currentPosition = 0;
+                const slideWidth = slides[0].offsetWidth;
+                const visibleSlides = 4;
+                const totalSlides = slides.length;
+
+                // Создаем индикаторы
+                slides.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('carousel-dot');
+                    if (index === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => goToSlide(index));
+                    dotsContainer.appendChild(dot);
+                });
+
+                const dots = document.querySelectorAll('.carousel-dot');
+
+                // Функция перехода к конкретному слайду
+                function goToSlide(index) {
+                    if (index < 0) index = totalSlides - visibleSlides;
+                    if (index > totalSlides - visibleSlides) index = 0;
+
+                    currentPosition = index;
+                    carousel.scrollTo({
+                        left: currentPosition * slideWidth,
+                        behavior: 'smooth'
+                    });
+
+                    // Обновляем активные точки
+                    dots.forEach((dot, i) => {
+                        if (i === currentPosition) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                }
+
+                // Кнопка "Назад"
+                prevBtn.addEventListener('click', () => {
+                    currentPosition = (currentPosition - 1 + totalSlides) % (totalSlides - visibleSlides + 1);
+                    goToSlide(currentPosition);
+                });
+
+                // Кнопка "Вперед"
+                nextBtn.addEventListener('click', () => {
+                    currentPosition = (currentPosition + 1) % (totalSlides - visibleSlides + 1);
+                    goToSlide(currentPosition);
+                });
+
+                // Автоматическая прокрутка
+                let autoSlideInterval = setInterval(() => {
+                    currentPosition = (currentPosition + 1) % (totalSlides - visibleSlides + 1);
+                    goToSlide(currentPosition);
+                }, 5000);
+
+                // Остановка авто-прокрутки при наведении
+                carousel.addEventListener('mouseenter', () => {
+                    clearInterval(autoSlideInterval);
+                });
+
+                carousel.addEventListener('mouseleave', () => {
+                    autoSlideInterval = setInterval(() => {
+                        currentPosition = (currentPosition + 1) % (totalSlides - visibleSlides + 1);
+                        goToSlide(currentPosition);
+                    }, 5000);
+                });
+            }
+
+            // Инициализируем карусель
+            initPortfolioCarousel();
         });
     </script>
 </body>

@@ -3,11 +3,29 @@ import requests
 
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from config import Config
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///services.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+
+class Service(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+
+def create_tables():
+    if not Service.query.first():
+        services = [
+            Service(title='Коррекция сколов/царапин', description='', price=1000),
+        ]
+        db.session.bulk_save_objects(services)
+        db.session.commit()
 
 
 @app.route('/')
@@ -90,4 +108,8 @@ def submit_form():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        create_tables()
+
     app.run(debug=True)

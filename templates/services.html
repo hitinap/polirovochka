@@ -1,4 +1,347 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .navbar {
+        background: #232324;
+    }
+
+    .contact-form-section .divider {
+        border-top: 1px solid #232324;
+        padding-top: 20px;
+    }
+
+    /* Стили для блока услуг */
+    .services-section {
+        background: white;
+        padding: 80px 0;
+    }
+
+    .services-section h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .services-section .section-subtitle {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 50px;
+        color: #555;
+    }
+
+    .services-list {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .service-card {
+        display: flex;
+        border: 1px solid #eee;
+        /* border-radius: 12px; */
+        overflow: hidden;
+        margin-bottom: 5px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        background: white;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-color: #3498db;
+    }
+
+    .service-image {
+        flex: 0 0 250px;
+        overflow: hidden;
+        padding: 5px;
+        /* Добавленные отступы */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        /* Легкий фон для контейнера */
+    }
+
+    .service-image img {
+        width: 100%;
+        height: 160px;
+        /* Фиксированная высота */
+        object-fit: cover;
+        /* Обрезка для сохранения пропорций */
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        /* Легкая тень */
+        transition: transform 0.5s ease;
+    }
+
+    .service-card:hover .service-image img {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .service-info {
+        flex: 1;
+        padding: 25px 20px;
+        /* Увеличили отступы */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .service-info h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.6rem;
+    }
+
+    .service-info p {
+        color: #555;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .service-price {
+        flex: 0 0 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        /* background: #f8f9fa; */
+        /* border-left: 1px solid #eee; */
+    }
+
+    .price-tag {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #3498db;
+        margin-bottom: 15px;
+    }
+
+    .service-link {
+        color: #3498db;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .service-link i {
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .service-link i {
+        transform: translateX(5px);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 30px;
+    }
+
+    .back-link i {
+        margin-right: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .back-link:hover i {
+        transform: translateX(-5px);
+    }
+
+    .service-price {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #3498db;
+        margin-bottom: 30px;
+    }
+
+    .service-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 40px;
+    }
+
+    .service-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 40px;
+    }
+
+    .service-features li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+    .service-features li::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #27ae60;
+    }
+
+    .order-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .order-btn:hover {
+        background: #2980b9;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .service-card {
+            flex-direction: column;
+        }
+
+        .service-image {
+            flex: 0 0 auto;
+            width: 100%;
+            padding: 20px;
+            padding: 0;
+        }
+
+        .service-image img {
+            height: 250px;
+            max-width: 100%;
+        }
+
+        .service-price {
+            border-left: none;
+            border-top: 1px solid #eee;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+        }
+
+        .price-tag {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .services-section {
+            padding: 50px 0;
+        }
+
+        .service-image {
+            padding: 0;
+        }
+
+        .service-image img {
+            height: 200px;
+        }
+
+        .service-info {
+            padding: 20px 15px;
+        }
+
+        .service-price {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .price-tag {
+            margin-bottom: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .service-image img {
+            height: 180px;
+        }
+    }
+</style>
+
+<div class="services-section">
+    <div class="container">
+        <h2>Наши услуги</h2>
+        <p class="section-subtitle">Мы предлагаем широкий спектр профессиональных услуг для вашего бизнеса</p>
+
+        <div class="services-list">
+            {% for service in services %}
+            <a href="#" class="service-card">
+                <div class="service-image">
+                    <img src="{{ url_for('static', filename='services/' + loop.index|string + '.jpg') }}"
+                        alt="{{ service.title }}">
+                </div>
+
+                <div class="service-info">
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                </div>
+
+                <div class="service-price">
+                    <div class="price-tag">от {{ service.price }} руб.</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% include 'form.html' %}
+</div>
+
+<!-- Блок "Нужна консультация?" -->
+<div class="consultation-section">
+    <div class="container">
+        <div class="consultation-container">
+            <div class="consultation-left">
+                <h2>Нужна консультация?</h2>
+            </div>
+
+            <div class="consultation-center">
+                <p>Не уверены, какая услуга подходит именно вам? Оставьте заявку и мы свяжемся с вами для
+                    бесплатной консультации.</p>
+            </div>
+
+            <div class="consultation-right">
+                <button class="consultation-btn" onclick="scrollToContactForm()">Оставить заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrollToContactForm() {
+        const formSection = document.getElementById('contactFormSection');
+        if (formSection) {
+            formSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Небольшая задержка для лучшей видимости
+            setTimeout(() => {
+                document.getElementById('contactFormSection').focus();
+            }, 800);
+        }
+    }
+</script>
 {% endblock %}

@@ -16,13 +16,22 @@ class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
 
 
 def create_tables():
+    Service.query.delete()
     if not Service.query.first():
         services = [
-            Service(title='Коррекция сколов/царапин', description='', price=1000),
+            Service(title='Коррекция сколов/царапин', description='Тестовое описание', price=1000),
+            Service(title='Чернение резины и пластика', description='', price=500),
+            Service(title='Очистка кузова авто', description='', price=1000),
+            Service(title='Химическая полировка фар', description='', price=1500),
+            Service(title='Химчистка салона авто', description='', price=4000),
+            Service(title='Нанесение защитных покрытий', description='', price=4000),
+            Service(title='Удаление/полировка притертостей', description='', price=1000),
+            Service(title='Полировка фар', description='', price=1000),
+            Service(title='Полировка авто', description='', price=6000),
         ]
         db.session.bulk_save_objects(services)
         db.session.commit()
@@ -35,7 +44,8 @@ def index():
 
 @app.route('/services')
 def services():
-    return render_template('services.html')
+    all_services = Service.query.all()
+    return render_template('services.html', services=all_services)
 
 
 @app.route('/promo')

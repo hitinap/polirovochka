@@ -55,7 +55,31 @@ def promo():
 
 @app.route('/gallery')
 def gallery():
-    return render_template('gallery.html')
+    categories = {
+        'Коррекция сколов/царапин': [
+            {'title': 'Nissan красного цвета', 'image': 'sample_main1.jpg'},
+            {'title': 'Интернет-магазин', 'image': 'web2.jpg'},
+            {'title': 'Лендинг', 'image': 'web3.jpg'},
+            {'title': 'Лендинг', 'image': 'web3.jpg'},
+            {'title': 'Лендинг', 'image': 'web3.jpg'},
+        ],
+        'Чернение резины и пластика': [
+            {'title': 'Брендинг для стартапа', 'image': 'design1.jpg'},
+            {'title': 'Редизайн приложения', 'image': 'design2.jpg'},
+            {'title': 'Упаковка продукта', 'image': 'design3.jpg'},
+        ],
+        'Очистка кузова авто': [
+            {'title': 'Фитнес-трекер', 'image': 'mobile1.jpg'},
+            {'title': 'Банковское приложение', 'image': 'mobile2.jpg'},
+            {'title': 'Социальная сеть', 'image': 'mobile3.jpg'},
+        ],
+        'Химическая полировка фар': [
+            {'title': 'Продвижение интернет-магазина', 'image': 'seo1.jpg'},
+            {'title': 'Оптимизация контента', 'image': 'seo2.jpg'},
+            {'title': 'Аналитика трафика', 'image': 'seo3.jpg'},
+        ],
+    }
+    return render_template('gallery.html', categories=categories)
 
 
 @app.route('/contacts')
@@ -72,7 +96,7 @@ def submit_form():
         phone = data.get('phone')
         service = data.get('service')
         comment = data.get('comment', '')
-        
+
         # Валидация данных
         if not name or not phone or not service:
             return jsonify({
@@ -86,14 +110,14 @@ def submit_form():
         
         if telegram_bot_token and telegram_chat_id:
             message = (
-                "📬 *Новая заявка с сайта!*\n\n"
-                f"*Имя:* {name}\n"
-                f"*Телефон:* `{phone}`\n"
-                f"*Услуга:* {service}\n"
-                f"*Комментарий:* {comment if comment else 'Нет комментария'}"
+                '📬 *Новая заявка с сайта!*\n\n'
+                f'*Имя:* {name}\n'
+                f'*Телефон:* `{phone}`\n'
+                f'*Услуга:* {service}\n'
+                f'*Комментарий:* {comment if comment else 'Нет комментария'}'
             )
             
-            url = f"https://api.telegram.org/bot{telegram_bot_token}/sendMessage"
+            url = f'https://api.telegram.org/bot{telegram_bot_token}/sendMessage'
             payload = {
                 'chat_id': telegram_chat_id,
                 'text': message,
@@ -102,7 +126,7 @@ def submit_form():
             
             response = requests.post(url, json=payload)
             if response.status_code != 200:
-                app.logger.error(f"Ошибка отправки в Telegram: {response.text}")
+                app.logger.error(f'Ошибка отправки в Telegram: {response.text}')
         
         return jsonify({
             'status': 'success',
@@ -110,7 +134,7 @@ def submit_form():
         })
     
     except Exception as e:
-        app.logger.error(f"Ошибка обработки формы: {str(e)}")
+        app.logger.error(f'Ошибка обработки формы: {str(e)}')
         return jsonify({
             'status': 'error',
             'message': 'Произошла ошибка при обработке вашей заявки. Пожалуйста, попробуйте позже.'

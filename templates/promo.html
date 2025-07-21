@@ -1,4 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .navbar {
+        background: #232324;
+    }
+
+    .container {
+        padding-top: 20px;
+    }
+
+    .contact-form-section .divider {
+        border-top: 1px solid #232324;
+        padding-top: 20px;
+    }
+</style>
+
+<div class="container">
+    {% include 'form.html' %}
+</div>
+
+<!-- Блок "Нужна консультация?" -->
+<div class="consultation-section">
+    <div class="container">
+        <div class="consultation-container">
+            <div class="consultation-left">
+                <h2>Нужна консультация?</h2>
+            </div>
+
+            <div class="consultation-center">
+                <p>Не уверены, какая услуга подходит именно вам? Оставьте заявку и мы свяжемся с вами для
+                    бесплатной консультации.</p>
+            </div>
+
+            <div class="consultation-right">
+                <button class="consultation-btn" onclick="scrollToContactForm()">Оставить заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrollToContactForm() {
+        const formSection = document.getElementById('contactFormSection');
+        if (formSection) {
+            formSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Небольшая задержка для лучшей видимости
+            setTimeout(() => {
+                document.getElementById('contactFormSection').focus();
+            }, 800);
+        }
+    }
+</script>
 {% endblock %}

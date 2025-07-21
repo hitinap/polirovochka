@@ -1,4 +1,453 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .navbar {
+        background: #232324;
+    }
+
+    .gallery-section {
+        background: #232324;
+        padding: 80px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 140px;
+    }
+
+    .gallery-container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .gallery-section h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .gallery-section .section-subtitle {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 50px;
+        color: #555;
+        width: 100%;
+    }
+
+    .gallery-category {
+        margin-bottom: 60px;
+        width: 100%;
+    }
+
+    .category-title {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .category-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: #D2C9B8;
+        border-radius: 2px;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        justify-items: center;
+        /* Центрирование элементов по горизонтали */
+    }
+
+    .gallery-item {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 300px;
+        width: 100%;
+        max-width: 400px;
+        /* Ограничение максимальной ширины */
+    }
+
+    .gallery-image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .gallery-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(44, 62, 80, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay-content {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        width: 100%;
+    }
+
+    /* Lightbox стили */
+    .lightbox {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .lightbox-content {
+        display: block;
+        margin: 60px auto;
+        max-width: 90%;
+        max-height: 80vh;
+    }
+
+    #lightbox-caption {
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        font-size: 1.2rem;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    /* Стили для панели навигации по категориям */
+    .category-nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 40px;
+        padding: 10px 0;
+        /* position: sticky; */
+        top: 20px;
+        z-index: 100;
+        /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); */
+        /* border-radius: 12px; */
+    }
+
+    .category-btn {
+        background: #232324;
+        color: #f1f1f1;
+        border: none;
+        text-decoration: none;
+        padding: 12px 25px;
+        /* border-radius: 30px; */
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        /* box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); */
+    }
+
+    .category-btn:hover {
+        /* background: #3498db; */
+        /* color: white; */
+        transform: translateY(-3px);
+        border-bottom: 2px solid #D2C9B8;
+        /* box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3); */
+    }
+
+    .category-btn.active {
+        /* background: #3498db;
+        color: white; */
+        font-weight: 600;
+        border-bottom: 2px solid #D2C9B8;
+    }
+
+    /* Анимация подсветки категории */
+    .highlight-category {
+        animation: highlight 2s ease;
+    }
+
+    @keyframes highlight {
+        0% {
+            box-shadow: 0 0 0 0 rgba(210, 201, 184, 0.4);
+        }
+
+        50% {
+            box-shadow: 0 0 0 20px rgba(210, 201, 184, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(210, 201, 184, 0);
+        }
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .category-nav {
+            top: 70px;
+            padding: 15px 10px;
+            gap: 10px;
+        }
+
+        .category-btn {
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .category-nav {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .category-btn {
+            width: 90%;
+            text-align: center;
+        }
+    }
+
+    /* Адаптивность */
+    @media (max-width: 1200px) {
+        .gallery-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .gallery-section {
+            padding: 50px 0;
+        }
+
+        .gallery-item {
+            height: 350px;
+            max-width: 100%;
+        }
+
+        .gallery-grid {
+            grid-template-columns: 1fr;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .gallery-item {
+            height: 300px;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="gallery-section">
+    <div class="gallery-container">
+        <h1>Галерея наших работ</h1>
+        <p class="section-subtitle">Посмотрите примеры наших работ и убедитесь в их качестве!</p>
+
+        <div class="category-nav">
+            {% for category in categories.keys() %}
+            <button class="category-btn" onclick="scrollToCategory('{{ category }}')">
+                {{ category }}
+            </button>
+            {% endfor %}
+        </div>
+
+        {% for category, works in categories.items() %}
+        <div class="gallery-category" id="category-{{ category }}">
+            <h2 class="category-title">{{ category }}</h2>
+            <div class="gallery-grid">
+                {% for work in works %}
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        <img src="{{ url_for('static', filename='gallery/' + work.image) }}" alt="{{ work.title }}">
+                        <div class="image-overlay">
+                            <div class="overlay-content">
+                                <h3>{{ work.title }}</h3>
+                                <button class="view-btn"
+                                    onclick="openLightbox('{{ url_for('static', filename='gallery/' + work.image) }}', '{{ work.title }}')">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Lightbox для просмотра изображений -->
+<div id="lightbox" class="lightbox">
+    <span class="close-btn" onclick="closeLightbox()">&times;</span>
+    <img id="lightbox-image" class="lightbox-content">
+    <div id="lightbox-caption"></div>
+</div>
+
+<div class="container">
+    {% include 'form.html' %}
+</div>
+
+<!-- Блок "Нужна консультация?" -->
+<div class="consultation-section">
+    <div class="container">
+        <div class="consultation-container">
+            <div class="consultation-left">
+                <h2>Нужна консультация?</h2>
+            </div>
+
+            <div class="consultation-center">
+                <p>Не уверены, какая услуга подходит именно вам? Оставьте заявку и мы свяжемся с вами для
+                    бесплатной консультации.</p>
+            </div>
+
+            <div class="consultation-right">
+                <button class="consultation-btn" onclick="scrollToContactForm()">Оставить заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Автоматическое обновление активной кнопки при прокрутке
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySections = document.querySelectorAll('.gallery-category');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const nav = document.querySelector('.category-nav');
+
+        // Наблюдатель за видимостью секций
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const categoryId = entry.target.id;
+                    const categoryName = categoryId.replace('category-', '');
+
+                    // Обновляем активную кнопку
+                    categoryButtons.forEach(btn => {
+                        if (btn.textContent === categoryName) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 }); // Порог видимости 50%
+
+        // Начинаем наблюдение за всеми категориями
+        categorySections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // При загрузке страницы активируем первую кнопку
+        if (categoryButtons.length > 0) {
+            categoryButtons[0].classList.add('active');
+        }
+    });
+
+    // Функции для работы с Lightbox
+    function openLightbox(imageSrc, title) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        lightbox.style.display = 'block';
+        lightboxImage.src = imageSrc;
+        lightboxCaption.textContent = title;
+
+        // Запрет прокрутки фона
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Закрытие lightbox при клике вне изображения
+    document.addEventListener('click', function (event) {
+        const lightbox = document.getElementById('lightbox');
+        if (event.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    // Закрытие по клавише Esc
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+
+    function scrollToCategory(categoryName) {
+        const categoryElement = document.getElementById(`category-${categoryName}`);
+        if (categoryElement) {
+            // Убираем подсветку у всех кнопок
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Добавляем активный класс к выбранной кнопке
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.textContent === categoryName) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Прокрутка к элементу
+            categoryElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Подсветка категории
+            categoryElement.classList.add('highlight-category');
+            setTimeout(() => {
+                categoryElement.classList.remove('highlight-category');
+            }, 2000);
+        }
+    }
+</script>
 {% endblock %}
